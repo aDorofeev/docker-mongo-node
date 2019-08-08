@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+    mongodbbackup:
+        build: mongodb-backup-s3/
+        depends_on:
+            - mongodb
+        environment:
+            INIT_BACKUP: "true"
+            AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+            AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+            AWS_S3_ENDPOINT: ${AWS_S3_ENDPOINT}
+            AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+            BACKUP_FOLDER: ${BACKUP_FOLDER}
+            MONGODB_HOST: "mongodb.compose"
+            MONGODB_PORT: 27017
+        restart: always
+        networks:
+            default:
+                aliases:
+                    - mongodb-backup-s3.compose
+                    - mongo
+            application-network:
+                aliases:
+                    - mongodb-backup-s3
+
+networks:
+    application-network:
+        external: true
+
